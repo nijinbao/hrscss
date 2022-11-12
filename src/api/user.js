@@ -1,7 +1,11 @@
 import request from '@/utils/request'
 
-export function login(data) {
- 
+export async function login(data) {
+  return {
+    data : {
+      token : 12345
+    }
+  }
 }
 
 export function getInfo(token) {
