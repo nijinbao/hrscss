@@ -1,6 +1,6 @@
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'//js插件，帮助我们进行数据存取的
 
-const TokenKey = 'vue_admin_template_token'
+const TokenKey = 'hrsaas-ihrm-token'
 
 export function getToken() {
   return Cookies.get(TokenKey)
