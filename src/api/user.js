@@ -1,12 +1,13 @@
 import request from '@/utils/request'
 
 export async function login(data) {
-  return {
-    data : {
-      token : 12345
-    }
+  return request({
+    method:"post",
+    url:"/sys/login",
+    data
+  })
   }
-}
+
 
 export function getInfo(token) {
 
