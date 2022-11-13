@@ -57,6 +57,7 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -72,7 +73,7 @@ export default {
     return {
       loginForm: {
         mobile: '13800000002',
-        password: '111111'
+        password: '123456'
       },
       loginRules: {
         mobile: [
@@ -97,6 +98,8 @@ export default {
     }
   },
   methods: {
+    // 将vuex中actions中的方法映射为这里的方法进行调用
+    ...mapActions(["user/login"]),
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -108,18 +111,23 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+     
+      // 手动对整个表单提交的数据进行校验
+      this.$refs.loginForm.validate(async (isOk)=>{
+        if(isOk) {
+          // 如果校验成功 调用vuex中对应的登陆的actions
+          // 因为该方法是异步的方法，所以需要使用await阻塞后续代码的执行
+         try{
+           // 开始加载
+          this.loading = true;
+          await this["user/login"](this.loginForm);
+          this.$router.push("/")
+         }catch(err) {
+          console.log(err);
+         }finally {
+            // 停止加载
             this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+         }
         }
       })
     }

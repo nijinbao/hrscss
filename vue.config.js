@@ -37,7 +37,7 @@ module.exports = {
       errors: true
     },
     // 配置反向代理解决跨域问题
-    Proxy:{
+    proxy:{
       "/api" :{
         target:"http://ihrm-java.itheima.net/",
         changeOrigin:true,

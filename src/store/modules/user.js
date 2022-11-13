@@ -17,12 +17,11 @@ const mutations = {
 }
 const actions = {
   async login(context,data) {
-    let {data:res} =await login(data) 
-    if(res.success) {
-      context.commit("setToken", res.data)
+      let res =await login(data) 
+      context.commit("setToken", res)
     }
   }
-}
+const getters = {}
 export default {
   state,
   mutations,
