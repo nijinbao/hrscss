@@ -1,5 +1,5 @@
 import {getToken,setToken,removeToken} from "@/utils/auth"
-import {login, getUserInfo} from "@/api/user"
+import {login, getUserInfo ,getUserDetailInfoById} from "@/api/user"
 const state = {
   token:getToken(),//vuex加载就从本地缓存中获取token,
   userInfo:{}
@@ -30,7 +30,10 @@ const actions = {
     },
   async getUserInfo(context) {
         let res = await getUserInfo()
-        context.commit("setUserInfo", res)
+        // 通过用户id获取用户基本信息完成数据的合并
+        let baseInfo = await getUserDetailInfoById(res.userId)
+        let newInfo = {...res, ...baseInfo}
+        context.commit("setUserInfo", newInfo)
         return res
   },
   

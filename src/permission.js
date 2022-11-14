@@ -4,7 +4,7 @@ import "nprogress/nprogress.css" //引入进度条样式
 import store from "./store"
 const whiteList = ["/login", "/404"]
 // 全局前置守卫 开始路由跳转
-router.beforeEach((to,from,next)=>{
+router.beforeEach(async (to,from,next)=>{
   // 开始进度条的显示
   NProgress.start()
   // 如果存在token
@@ -13,6 +13,10 @@ router.beforeEach((to,from,next)=>{
     if(to.path === "/login") {
       next('/') 
     } else {
+      // 判断是否存在用户Id
+      if(!store.getters.userId) {
+       await store.dispatch("user/getUserInfo")
+      }
       next()
     }
   } else {

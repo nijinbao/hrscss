@@ -57,7 +57,7 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-import { mapActions } from 'vuex'
+import { mapActions} from 'vuex'
 
 export default {
   name: 'Login',
@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     // 将vuex中actions中的方法映射为这里的方法进行调用
-    ...mapActions(["user/login"]),
+    ...mapActions(["user/login",""]),
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -121,7 +121,7 @@ export default {
            // 开始加载
           this.loading = true;
           await this["user/login"](this.loginForm);
-          this.$router.push("/")
+          this.$router.push("/")    
          }catch(err) {
           console.log(err);
          }finally {
@@ -131,6 +131,8 @@ export default {
         }
       })
     }
+  },
+  computed:{
   }
 }
 </script>

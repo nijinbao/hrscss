@@ -22,3 +22,8 @@ export function getUserInfo() {
       method:"post"
     })
 }
+export function getUserDetailInfoById(id) {
+  return request({
+    url:`/sys/user/${id}`
+  })
+}
