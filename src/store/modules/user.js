@@ -1,4 +1,4 @@
-import {getToken,setToken,removeToken} from "@/utils/auth"
+import {getToken,setToken,removeToken, setTimeStamp} from "@/utils/auth"
 import {login, getUserInfo ,getUserDetailInfoById} from "@/api/user"
 const state = {
   token:getToken(),//vuex加载就从本地缓存中获取token,
@@ -27,6 +27,8 @@ const actions = {
   async login(context,data) {
       let res =await login(data) 
       context.commit("setToken", res)
+      // 将当前的时间戳存入缓存中
+      setTimeStamp()
     },
   async getUserInfo(context) {
         let res = await getUserInfo()
@@ -36,6 +38,11 @@ const actions = {
         context.commit("setUserInfo", newInfo)
         return res
   },
+  // 用户退出 删除用户的token 删除用户资料
+  logout(context) {
+    context.commit("removeToken")
+    context.commit("deleteUserInfo")
+  }
   
   }
 const getters = {}

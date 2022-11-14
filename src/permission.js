@@ -3,6 +3,7 @@ import NProgress from "nprogress"
 import "nprogress/nprogress.css" //引入进度条样式
 import store from "./store"
 const whiteList = ["/login", "/404"]
+
 // 全局前置守卫 开始路由跳转
 router.beforeEach(async (to,from,next)=>{
   // 开始进度条的显示
