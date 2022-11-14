@@ -10,7 +10,8 @@ const request = axios.create({
 request.interceptors.request.use((config)=>{
   // 如果存在token
   if(store.getters.token) {
-    config.headers["Authorization"] = `Bearer ${store.getters.token}`
+    // 注入token
+    config.headers['Authorization'] = `Bearer ${store.getters.token}`
   }
   // 注意：只有返回config,请求才能够正常的发送
   return config
