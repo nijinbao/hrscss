@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/social/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"社保管理"
+        title:"社保管理",
+        icon:"table"
       }
     }
   ]

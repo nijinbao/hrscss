@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/salarys/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"工资管理"
+        title:"工资管理",
+        icon:"money"
       }
     }
   ]

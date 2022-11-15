@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/approvals/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"审批"
+        title:"审批",
+        icon :"tree-table"
       }
     }
   ]

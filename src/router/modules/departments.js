@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/departments/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"组织架构"
+        title:"组织架构",
+        icon:"tree"
       }
     }
   ]

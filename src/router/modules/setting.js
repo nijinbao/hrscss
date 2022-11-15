@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/setting/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"公司设置"
+        title:"公司设置",
+        icon:"setting"
       }
     }
   ]

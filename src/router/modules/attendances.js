@@ -10,7 +10,8 @@ export default {
       component:()=>import("@/views/attendances"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"出勤管理"
+        title:"出勤管理",
+        icon:"skill"
       }
     }
   ]
