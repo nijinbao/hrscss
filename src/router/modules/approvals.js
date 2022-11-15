@@ -1,5 +1,6 @@
 import layout from "@/layout/index.vue"
 export default {
+  name:"approvals",
   path:"/approvals",
   component:layout,
   children:[
@@ -9,7 +10,7 @@ export default {
       component:()=>import("@/views/approvals/index.vue"),
       // 传递一些元信息，方便展示侧边栏的标题
       meta:{
-        title:"审批管理"
+        title:"审批"
       }
     }
   ]
