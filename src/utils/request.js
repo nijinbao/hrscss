@@ -7,9 +7,9 @@ const request = axios.create({
   // 当执行 npm run dev  => .evn.development => /api => 跨域代理
   baseURL: process.env.VUE_APP_BASE_API, // npm  run dev  => /api npm run build =>  /prod-api
   timeout: 5000 // 设置超时时间
-})
+})  
 // 设置token的有效时间单位s
-let effectiveTime = 3600
+let effectiveTime = 36000000
 // 请求拦截器
 request.interceptors.request.use((config)=>{
   // 如果存在token
