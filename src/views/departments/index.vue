@@ -20,8 +20,9 @@
             /> 
           </el-tree>
           <addDept 
-          :isShowDialog="isShowDialog"
+          :isShowDialog.sync="isShowDialog"
           :treeNode="treeNode"
+          @addDepts="getDepartInfo"
           ></addDept>
       </el-card>
     </div>

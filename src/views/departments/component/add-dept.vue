@@ -4,8 +4,10 @@
     title="添加部门"
     :visible="isShowDialog"
     width="50%"
+    @close="handleClose"
     >
     <el-form 
+    ref="deptForm"
     label-width="100px"
     :model="formData"
     :rules="rules">
@@ -29,8 +31,8 @@
     </el-form>
     <el-row slot="footer" type="flex" justify="center">
       <el-col :span="8">
-        <el-button size="mini">取消</el-button>
-        <el-button size="mini" type="primary">确定</el-button>
+        <el-button size="mini" @click="handleClose">取消</el-button>
+        <el-button size="mini" type="primary" @click="handleSubmit">确定</el-button>
       </el-col>
   </el-row>
   </el-dialog>
@@ -39,7 +41,8 @@
 
 <script>
 import {getEmployeeSimple} from "@/api/employees"
-import { getDepartInfo } from '@/api/department';
+import { getDepartInfo,addDepartments } from '@/api/department';
+import { is } from "@babel/types";
 export default {
     props:{
     isShowDialog:{
@@ -58,7 +61,7 @@ export default {
               // 在整个模块中code均不能重复
               let {depts} = await getDepartInfo()
               let res = depts.every(item=>item.code!==value)
-              res ? callback(new Error("code不能重复")) :callback()
+              res ?callback(): callback(new Error("code不能重复")) 
             }
 const checkName = async (rule,value,callback)=>{
               let {depts} = await getDepartInfo()
@@ -129,6 +132,24 @@ const checkName = async (rule,value,callback)=>{
   methods: {
    async getEmployeeSimple() {
         this.pepoles = await getEmployeeSimple()
+    },
+    // 对表单的数据进行手动校验和提交
+    handleSubmit() {
+      this.$refs.deptForm.validate(async (isOk)=>{
+        if(isOk) {
+          // 提交数据
+        let res= await addDepartments({...this.formData,pid:this.treeNode.id})
+        // 告诉父组件更新数据
+          this.$emit('addDepts');
+          this.$emit("update:isShowDialog",false)
+        } 
+      })
+    },
+    // 监听关闭对话框的操作
+    handleClose() {
+      this.$emit("update:isShowDialog",false)
+      // 重置表单的数据
+      this.$refs.deptForm.resetFields()
     }
   },
 };
