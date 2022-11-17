@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {deletePartment} from "@/api/department"
+import {deletePartment, addDepartments} from "@/api/department"
 export default {
   props:{
     treeNode:{
@@ -62,6 +62,8 @@ export default {
     operateDepartment(type) {
         if(type === "add") {
           // 添加部门
+          // 告诉父组件，被点击传递当前被点击的部门的数据
+          this.$emit("addDepts" ,this.treeNode)
         } else if(type === "edit") {
           // 编辑部门
         }else {
