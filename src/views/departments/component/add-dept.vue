@@ -3,7 +3,7 @@
     <el-dialog
     title="添加部门"
     :visible="isShowDialog"
-    width="30%"
+    width="50%"
     >
     <el-form 
     label-width="100px"
@@ -16,7 +16,12 @@
         <el-input style="width:80%" v-model="formData.code"></el-input>
       </el-form-item>
       <el-form-item label="部门负责人" prop="manager">
-        <el-select style="width:80%" v-model="formData.manager"></el-select>
+        <el-select 
+        style="width:80%" 
+        v-model="formData.manager"
+        @focus="getEmployeeSimple">
+        <el-option v-for="(item, index) in pepoles" :key="item.id" :value="item.username">{{item.username}}</el-option>
+      </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
         <el-input type="textarea" style="width:80%" v-model="formData.introduce" ></el-input>
@@ -33,10 +38,10 @@
 </template>
 
 <script>
+import {getEmployeeSimple} from "@/api/employees"
 import { getDepartInfo } from '@/api/department';
 export default {
-  name: 'WorkspaceJsonAddDept',
-  props:{
+    props:{
     isShowDialog:{
       type:Boolean,
       default:false
@@ -111,7 +116,9 @@ const checkName = async (rule,value,callback)=>{
 
           
         
-      }
+      },
+      // 负责人数据
+      pepoles:[]
     };
   },
 
@@ -120,7 +127,9 @@ const checkName = async (rule,value,callback)=>{
   },
 
   methods: {
-    
+   async getEmployeeSimple() {
+        this.pepoles = await getEmployeeSimple()
+    }
   },
 };
 </script>
