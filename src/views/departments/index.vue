@@ -21,6 +21,7 @@
           </el-tree>
           <addDept 
           :isShowDialog="isShowDialog"
+          :treeNode="treeNode"
           ></addDept>
       </el-card>
     </div>
@@ -57,7 +58,7 @@ export default {
   methods: {
    async getDepartInfo() {
       let res = await getDepartInfo()
-      this.company = {name :res.companyName,manager:"负责人"}
+      this.company = {name :res.companyName,manager:"负责人",id:""}
       this.departs = tranListToTreeData(res.depts,"")
     },
     addDepts(treeNode) {
