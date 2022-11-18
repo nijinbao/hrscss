@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <el-card class="tree-card">
+      <el-card class="tree-card" v-loading="loading">
           <tree-tool :tree-node="company" :isRoot="true" @addDepts="addDepts"></tree-tool>
           <!-- 树形控件 -->
 
@@ -48,7 +48,8 @@ export default {
     },
     isShowDialog:false,
     // 点击部门的信息
-    treeNode:{}
+    treeNode:{},
+    loading: false // 用来控制进度弹层的显示和隐藏
     }
   },
   components:{
@@ -61,9 +62,11 @@ export default {
   },
   methods: {
    async getDepartInfo() {
+      this.loading = true
       let res = await getDepartInfo()
       this.company = {name :res.companyName,manager:"负责人",id:""}
       this.departs = tranListToTreeData(res.depts,"")
+      this.loading = false
     },
     addDepts(treeNode) {
       this.isShowDialog = !this.isShowDialog
@@ -72,7 +75,7 @@ export default {
     // 编辑部门信息
   async  editDepts(treeNode) {
       await this.$refs.addDept.getDetailInfo(treeNode.id)
-      this.isShowDialog= true
+      this.isShowDialog = true
       this.treeNode = treeNode
       // this.$refs.addDept.formData = treeNode
     }
