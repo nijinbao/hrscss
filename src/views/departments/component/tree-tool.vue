@@ -66,6 +66,8 @@ export default {
           this.$emit("addDepts" ,this.treeNode)
         } else if(type === "edit") {
           // 编辑部门
+          this.$emit("editDepts",this.treeNode)
+          
         }else {
           // 删除部门
           // this.$confirm()返回的是一个promise对象
@@ -81,7 +83,8 @@ export default {
           this.$message("删除部门成功")
         })
         }
-    }
+    },
+
   },
 };
 </script>

@@ -27,3 +27,21 @@ export function addDepartments(data) {
     data
   })
 }
+/**
+ * 根据id获取部门详细信息
+*/
+export function getDetailInfo(id) {
+  return request({
+    url:`/company/department/${id}`
+  })
+}
+/**
+ * 根据id修改部门详情
+*/
+export function editDepts(data) {
+  return request({
+    method :"put",
+    url:`/company/department/${data.id}`,
+    data
+  })
+}

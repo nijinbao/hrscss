@@ -17,13 +17,16 @@
             :tree-node="data"
             @delDepts="getDepartInfo"
             @addDepts="addDepts"
+            @editDepts="editDepts"
+
             /> 
           </el-tree>
           <addDept 
           :isShowDialog.sync="isShowDialog"
           :treeNode="treeNode"
           @addDepts="getDepartInfo"
-          ></addDept>
+          ref="addDept">
+        </addDept>
       </el-card>
     </div>
   </div>
@@ -65,6 +68,13 @@ export default {
     addDepts(treeNode) {
       this.isShowDialog = !this.isShowDialog
       this.treeNode = treeNode
+    },
+    // 编辑部门信息
+  async  editDepts(treeNode) {
+      await this.$refs.addDept.getDetailInfo(treeNode.id)
+      this.isShowDialog= true
+      this.treeNode = treeNode
+      // this.$refs.addDept.formData = treeNode
     }
   },
 }

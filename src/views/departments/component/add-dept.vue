@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    title="添加部门"
+    :title="title"
     :visible="isShowDialog"
     width="50%"
     @close="handleClose"
@@ -41,7 +41,7 @@
 
 <script>
 import {getEmployeeSimple} from "@/api/employees"
-import { getDepartInfo,addDepartments } from '@/api/department';
+import { getDepartInfo,addDepartments, getDetailInfo ,editDepts} from '@/api/department';
 import { is } from "@babel/types";
 export default {
     props:{
@@ -57,17 +57,31 @@ export default {
     }
   },
   data() {
+    // 编辑模式和添加模式的校验规则是不同的
     const checkCode = async (rule,value,callback)=>{
               // 在整个模块中code均不能重复
               let {depts} = await getDepartInfo()
-              let res = depts.every(item=>item.code!==value)
+              let res 
+              if(this.formData.id) {
+                  // 在编辑模式下，code不能和所有的code相同，同时排除自己
+                res = depts.filter(item => item.id !==this.formData.id && item.code !==value && value)
+              }else {
+               res = depts.every(item=>item.code!==value && value)//数据库中的数据code可能为空
+              }
               res ?callback(): callback(new Error("code不能重复")) 
             }
 const checkName = async (rule,value,callback)=>{
               let {depts} = await getDepartInfo()
-              // 对部门数据进行过滤，找出是否存在和自己子级部门相同的名称
-              let res = depts.filter(item => item.pid === this.treeNode.id).some(item =>item.name === value)
-              res ? callback(new Error("部门名称重复")) : callback()
+              let res
+              if(this.formData.id) {
+                // 自己的同级部门的名称不能相同
+                res = depts.filter(item=>(item.pid === this.formData.pid)&& item.id!==this.formData.id).some(item=>item.name===value)
+              }else {
+               res = depts.filter(item => item.pid === this.treeNode.id).some(item =>item.name === value)
+              }
+                    // 对部门数据进行过滤，找出是否存在和自己子级部门相同的名称
+                    res ? callback(new Error("部门名称重复")) : callback()
+             
             }
     return {
       // 表单数据
@@ -137,8 +151,14 @@ const checkName = async (rule,value,callback)=>{
     handleSubmit() {
       this.$refs.deptForm.validate(async (isOk)=>{
         if(isOk) {
-          // 提交数据
+          // 判断是编辑模式还是添加模式
+          if(this.formData.id) {
+            await editDepts(this.formData)
+          }else {
+             // 提交数据
         let res= await addDepartments({...this.formData,pid:this.treeNode.id})
+          }
+         
         // 告诉父组件更新数据
           this.$emit('addDepts');
           this.$emit("update:isShowDialog",false)
@@ -150,8 +170,25 @@ const checkName = async (rule,value,callback)=>{
       this.$emit("update:isShowDialog",false)
       // 重置表单的数据
       this.$refs.deptForm.resetFields()
+      // 手动的重置表单的数据
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '' // 部门介绍
     }
+    },
+   async getDetailInfo(id) {
+    let res = await getDetailInfo(id)
+    this.formData = res
+    }
+  
   },
+  computed:{
+    title() {
+      return !this.formData.id ? "添加部门" :"编辑部门"
+    }
+  }
 };
 </script>
 
