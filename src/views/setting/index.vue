@@ -7,7 +7,7 @@
           <el-tab-pane label="角色管理">
             <div class="userinfo">
               <el-row>
-                <el-button type="primary" size="mini" icon="el-icon-plus">添加角色</el-button>
+                <el-button type="primary" size="mini" icon="el-icon-plus" @click="isShow=true">添加角色</el-button>
               </el-row>
               <!-- 表格 -->
               <el-table border class="tab" :data="list">
@@ -18,9 +18,13 @@
                 <el-table-column label="描述" prop="description">
                 </el-table-column>
                 <el-table-column label="操作 " align="center">
-                  <el-button type="text">分配权限</el-button>
-                  <el-button type="text">修改</el-button>
-                  <el-button type="text">删除</el-button>
+                  <template slot-scope="{row}">
+                    <div>
+                      <el-button type="text">分配权限</el-button>
+                      <el-button type="text" @click="editRole(row.id)">修改</el-button>
+                      <el-button type="text" @click="deleteRole(row.id)">删除</el-button>
+                    </div>
+                  </template>
                 </el-table-column>
               </el-table>
               <el-row type="flex" justify="end" align="middle" style="height:60px">
@@ -76,12 +80,28 @@
           </el-tab-pane>
         </el-tabs>
       </el-card>
+      <!-- dialog对话框 -->
+      <el-dialog :visible="isShow" title="编辑角色" @close="btnCancel">
+        <el-form :model="roleInfo" :rules="rules" label-width="120px" ref="roleForm">
+          <el-form-item prop="name" label="编辑角色">
+            <el-input v-model="roleInfo.name"></el-input>
+          </el-form-item>
+          <el-form-item prop="description" label="角色描述">
+            <el-input v-model="roleInfo.description"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-row type="flex" justify="center">
+          <el-button @click="btnCancel">取消</el-button>
+          <el-button type="primary" @click="submitInfo"> 确定</el-button>
+        </el-row>
+        
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import {getRoleList, getCompanyById} from "@/api/setting"
+import {getRoleList, getCompanyById , deleteRole , getRoleInfo , updateRole ,addRole  } from "@/api/setting"
 import { mapGetters } from "vuex"
 export default {
   data() {
@@ -93,7 +113,22 @@ export default {
       },
       // 用户列表
       list:[],
-      companyInfo:{}
+      companyInfo:{},
+      // 角色信息
+      roleInfo:{
+        name:"",
+        description:""
+      },
+      // 是否显示对话框
+      isShow:false,
+      rules:{
+        name: [{
+        required:true,
+        trigger:"blur",
+        message:"name不能为空"
+      }]
+        
+      }
     }
   },
   methods: {
@@ -110,6 +145,58 @@ export default {
     // 获取公司信息
    async getCompanyById() {
      this.companyInfo =  await getCompanyById(this.companyId)
+    },
+    // 删除角色
+  async  deleteRole(id) {
+     try {
+     await this.$confirm('此操作将永久删除该角色信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })  
+      await  deleteRole(id)
+      this.$message.success("删除角色成功 ")
+     } catch (error) {
+      console.log(error);
+     }
+    },
+    // 根据id编辑角色信息
+    async editRole(id) {
+      // 如果存在id则为编辑模式
+      this.roleInfo = await getRoleInfo(id)
+      this.isShow = true
+
+    },
+      // 提交表单数据
+    async submitInfo() {
+      // 首先对表单数据进行校验
+      try {
+       await this.$refs.roleForm.validate()
+      //  编辑角色
+      if(this.roleInfo.id) {
+        await updateRole(this.roleInfo)
+        this.$message.success("更新数据成功")
+      }else { 
+        // 添加角色
+        await addRole(this.roleInfo)
+        this.$message.success("添加角色成功")
+      }
+       //  后段数据更新成功，重新获取数据
+       this.getRoleList()
+      } catch (error) {
+        console.log(error);
+      } finally{
+       this.isShow = false
+      }
+    },
+    // 表单关闭 重置表单数据
+    btnCancel() {
+      this.isShow= false
+      this.$refs.roleForm.resetFields()
+      this.roleInfo = {
+        name:"",
+        description:""
+      }
     }
 
   },
@@ -127,8 +214,7 @@ export default {
 .userinfo {
   padding: 30px;
   .tab {
-    margin-top: 20px;
-    
+    margin-top: 20px;  
   }
 }
 .company-info {
