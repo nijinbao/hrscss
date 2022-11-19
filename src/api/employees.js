@@ -5,3 +5,12 @@ export function getEmployeeSimple( ) {
     url:"/sys/user/simple"
   })
 }
+/**
+ * 获取员工列表
+*/
+export function getEmployerList(params) {
+  return request({
+    url:"/sys/user",
+    params
+  })
+}
