@@ -14,3 +14,12 @@ export function getEmployerList(params) {
     params
   })
 }
+/**
+ * 删除员工接口
+*/
+export function delEmploy(id) {
+  return request({
+    url:`/sys/user/${id}`,
+    method:"delete"
+  })
+}

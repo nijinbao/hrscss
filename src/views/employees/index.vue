@@ -39,13 +39,13 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template>
+            <template v-slot="{row}">
               <el-button type="text" size="small">查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <el-button type="text" size="small" @click="delEmploy(row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import {getEmployerList} from "@/api/employees"
+import {getEmployerList , delEmploy} from "@/api/employees"
 import EmployeeEnum from "@/constant/employees"
 export default {
 data() {
@@ -98,6 +98,22 @@ methods: {
   formatInfo(row, column, cellValue, index) {
     let obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
     return obj ? obj.value : cellValue
+  },
+  // 删除员工
+ async delEmploy(id) {
+    try {
+      await this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await delEmploy(id)
+        this.$message.success("删除数据成功")
+        // 重新拉取数据
+        this.getEmployerList()
+      } catch (error) {
+      console.log(error);
+    }
   }
 },
 created() {
