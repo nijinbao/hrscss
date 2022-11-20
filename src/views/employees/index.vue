@@ -9,7 +9,7 @@
           <template v-slot:after>
             <el-button type="success">导入</el-button>
             <el-button type="danger">导出</el-button>
-            <el-button type="primary" icon="el-icon-plus">新增员工</el-button>
+            <el-button type="primary" icon="el-icon-plus" @click="addEmployer" size="mini">新增员工</el-button>
           </template>
         </PageTools>
         <!-- 表格 -->
@@ -61,6 +61,7 @@
             >
           </el-pagination>
         </el-row>
+        <addEmploy :isShow.sync="isShow"></addEmploy>
     </div>
   </div>
 </template>
@@ -68,6 +69,7 @@
 <script>
 import {getEmployerList , delEmploy} from "@/api/employees"
 import EmployeeEnum from "@/constant/employees"
+import addEmploy from "./components/add-employ.vue"
 export default {
 data() {
   return {
@@ -77,7 +79,11 @@ data() {
       size:8,
       total:0
     },
-    loading:false
+    loading:false,
+    // 定义添加员工的弹出层是否显示
+    isShow:false,
+   
+
   }
 },
 methods: {
@@ -114,11 +120,18 @@ methods: {
       } catch (error) {
       console.log(error);
     }
+  },
+  // 添加员工
+  addEmployer() {
+    this.isShow = true  
   }
 },
 created() {
   this.getEmployerList()
 },
+components:{
+  addEmploy
+}
 }
 </script>
 
