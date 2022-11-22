@@ -37,7 +37,7 @@
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="手机">
-            <el-input v-model="userInfo.mobile" />
+            <el-input v-model="userInfo.mobile" disabled />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -65,7 +65,7 @@
       <!-- 保存个人信息 -->
       <el-row class="inline-info" type="flex" justify="center">
         <el-col :span="12">
-          <el-button type="primary" @click="saveUser">保存更新</el-button>
+          <el-button type="primary" @click="saveUserInfoById">保存更新</el-button>
           <el-button @click="$router.back()">返回</el-button>
 
         </el-col>
@@ -271,7 +271,7 @@
         <!-- 保存员工信息 -->
         <el-row class="inline-info" type="flex" justify="center">
           <el-col :span="12">
-            <el-button type="primary" @click="savePersonal">保存更新</el-button>
+            <el-button type="primary" @click="updatePersonal">保存更新</el-button>
             <el-button @click="$router.back()">返回</el-button>
           </el-col>
         </el-row>
@@ -283,6 +283,8 @@
 </template>
 <script>
 import EmployeeEnum from "@/constant/employees"
+import {getUserDetailInfoById} from "@/api/user"
+import {saveUserInfoById, getPersonalDetail, updatePersonal,getJobDetail,updateJob} from "@/api/employees"
 export default {
   data() {
     return {
@@ -353,7 +355,31 @@ export default {
         remarks: '' // 备注
       }
     }
-  }
+  },
+  methods: {
+    // 获取用户基本信息
+    async getUserDetailInfoById() {
+    this.userInfo = await getUserDetailInfoById(this.userId)
+    },
+    // 保存用户基本信息
+    async saveUserInfoById() {
+      await saveUserInfoById(this.userInfo)
+      this.$message.success("保存用户基本信息成功")
+    },
+    // 获取用户详细信息
+    async getUserDetailInfo() {
+       this.formData = await getPersonalDetail(this.userId)
+    },
+    // 保存用户详细信息
+    async updatePersonal() {
+      await updatePersonal(this.formData)
+      this.$message.success("保存用户详细信息成功")
+    }
+  },
+  created() {
+    this.getUserDetailInfoById()
+    this.getUserDetailInfo()
+  },
 }
 
 </script>

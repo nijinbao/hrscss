@@ -25,11 +25,3 @@ export default {
     }
   ]
 }
-// 修改员工基本信息并保存
-export function saveUserInfoById(data) {
-  return request({
-    url:`/sys/user/${data.id}`,
-    method:"put",
-    data
-  })
-}

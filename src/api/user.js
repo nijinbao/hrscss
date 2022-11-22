@@ -22,8 +22,12 @@ export function getUserInfo() {
       method:"post"
     })
 }
+/**
+ * 通过id获取用户详情
+*/
 export function getUserDetailInfoById(id) {
   return request({
     url:`/sys/user/${id}`
   })
 }
+
