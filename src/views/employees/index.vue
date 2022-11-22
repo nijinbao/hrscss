@@ -7,8 +7,8 @@
             <span>共{{pageInfo.total}}条记录</span>
           </template>
           <template v-slot:after>
-            <el-button type="success">导入</el-button>
-            <el-button type="danger">导出</el-button>
+            <el-button type="success" @click="goImport">导入</el-button>
+            <el-button type="danger" @click="exportData">导出</el-button>
             <el-button type="primary" icon="el-icon-plus" @click="addEmployer" size="mini">新增员工</el-button>
           </template>
         </PageTools>
@@ -70,6 +70,7 @@
 import {getEmployerList , delEmploy} from "@/api/employees"
 import EmployeeEnum from "@/constant/employees"
 import addEmploy from "./components/add-employ.vue"
+import { formatDate } from "@/filters"
 export default {
 data() {
   return {
@@ -124,6 +125,60 @@ methods: {
   // 添加员工
   addEmployer() {
     this.isShow = true  
+  },
+  // 跳转到导入员工数据界面
+  goImport() {
+    this.$router.push("/import")
+  },
+  // 将员工数据导出为excel
+ async exportData() {
+    const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // 复杂表头
+      const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+      // 合并
+      const merges = ["A1:A2","B1:F1","G1:G2"]
+      let {rows } = await getEmployerList({page:1,size:this.pageInfo.total})
+     let {data,header} = this.formatData(headers,rows)
+      import('@/vendor/Export2Excel').then(excel => {
+     excel.export_json_to_excel({
+    header, //表头 必填
+    data, //具体数据 必填
+    filename: '员工工资表', //非必填
+    autoWidth: true, //非必填
+    bookType: 'xlsx' ,//非必填
+    multiHeader,
+    merges
+  })
+})
+     
+  },
+  // 格式化导出数据
+  formatData(headers, rows) {
+     // 将返回的数据的格式转换为数组嵌套数组而且返回的数据要和表头一一对应起来
+     let header =Object.keys(headers)
+      const data = rows.map(item=>{
+       return  header.map(key=>{
+          if(headers[key]==="timeOfEntry" || headers[key]==="correctionTime") {
+            // 做时间格式的处理转换
+            return formatDate(item[headers[key]])
+          }else if(headers[key]==="formOfEmployment"){
+            // 聘用形式的转换
+           let obj = EmployeeEnum.hireType.find(obj=>obj.id===item[headers[key]])
+           return obj?obj.value:"未知"
+            
+          }
+          return item[headers[key]]
+        })
+      })
+    return {header,data}
   }
 },
 created() {

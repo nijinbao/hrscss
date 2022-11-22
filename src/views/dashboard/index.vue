@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-container">
-      <UploadExcel></UploadExcel>
     <div class="dashboard-text">name: {{ username }}</div>
   </div>
 </template>
