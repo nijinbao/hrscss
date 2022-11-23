@@ -58,7 +58,8 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-           
+           <!-- 图片 上传组件 -->
+           <upload-image></upload-image>
           </el-form-item>
         </el-col>
       </el-row>
