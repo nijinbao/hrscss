@@ -14,7 +14,8 @@ export default {
         title:"员工管理",
         icon:"people"
       }
-    },{
+    },
+    {
       path:"detail/:id",//动态路由 :id?表示:id可传可不传
       component:()=>import("@/views/employees/components/Detail.vue"),
       hidden:true,
@@ -22,6 +23,15 @@ export default {
         title:"员工详情"
       }
 
+    },
+    {
+      path:"print/:id",
+      component:()=>import("@/views/employees/components/print.vue"),
+      hidden:true,
+      meta:{
+        title: '打印', // 标记当前路由规则的中文名称 后续在做左侧菜单时 使用
+        icon: 'people'
+      }
     }
   ]
 }
