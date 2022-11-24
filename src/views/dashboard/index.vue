@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ username }}</div>
-    <upload-image></upload-image>
   </div>
 </template>
 

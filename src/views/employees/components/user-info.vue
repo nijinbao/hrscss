@@ -59,7 +59,7 @@
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
            <!-- 图片 上传组件 -->
-           <upload-image></upload-image>
+           <upload-image ref="baseInfo"></upload-image>
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,6 +91,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <upload-image ref="detailInfo"></upload-image>
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -361,20 +362,41 @@ export default {
     // 获取用户基本信息
     async getUserDetailInfoById() {
     this.userInfo = await getUserDetailInfoById(this.userId)
+    // 首先判断是否存在用户头像
+    // 含有空格的字符串Boolean(" ")值为true
+    if(this.userInfo.staffPhoto && this.userInfo.staffPhoto.trim()){
+      this.$refs.baseInfo.fileList=[{url:this.userInfo.staffPhoto,upload:true}]
+    }
     },
     // 保存用户基本信息
     async saveUserInfoById() {
-      await saveUserInfoById(this.userInfo)
+      // 获取uploadImage组件的fileList
+      const fileList = this.$refs.baseInfo.fileList
+      // 保存用户基本信息之前首先判断文件是否上传成功
+      if(!fileList.every(item=>item.upload)) {
+        this.$message.error("文件还在上传中!")
+        return 
+      }
+      // 后端接口需要，如果未上传图片，需要使用含有一个空格的字符串作为默认值
+      await saveUserInfoById({...this.userInfo,staffPhoto:fileList.length ? fileList[0].url : " "})
       this.$message.success("保存用户基本信息成功")
     },
     // 获取用户详细信息
     async getUserDetailInfo() {
        this.formData = await getPersonalDetail(this.userId)
+       if(this.formData.staffPhoto && this.formData.staffPhoto.trim()) {
+       this.$refs.detailInfo.fileList=[{url:this.formData.staffPhoto,upload:true}]
+       }
     },
     // 保存用户详细信息
     async updatePersonal() {
-      await updatePersonal(this.formData)
-      this.$message.success("保存用户详细信息成功")
+      const fileList = this.$refs.detailInfo.fileList
+      if(!fileList.every(item=>item.upload)) {
+        this.$message.error("文件还在上传中")
+        return 
+      }
+      await updatePersonal({...this.formData,staffPhoto: fileList[0].url})
+        this.$message.success("保存用户详细信息成功")
     }
   },
   created() {
