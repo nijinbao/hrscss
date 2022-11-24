@@ -16,6 +16,15 @@
         <el-table  v-loading="loading" :data="list" border stripe>
           <el-table-column label="序号" sortable="" type="index" width="80" />
           <el-table-column label="姓名" sortable="" prop="username" />
+          <!-- 头像 -->
+          <el-table-column label="头像" align="center" width="120">
+            <template v-slot="{row}">
+              <img 
+              :src="row.staffPhoto"
+               style="border-radius:50% ;width: 100px; height: 100px; padding: 10px" alt=""
+               v-imgeerror="require('@/assets/common/head.jpg')">
+            </template>
+          </el-table-column>
           <el-table-column label="工号" sortable="" prop="workNumber" />
           <el-table-column 
           label="聘用形式" 
