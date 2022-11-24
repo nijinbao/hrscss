@@ -395,7 +395,7 @@ export default {
         this.$message.error("文件还在上传中")
         return 
       }
-      await updatePersonal({...this.formData,staffPhoto: fileList[0].url})
+      await updatePersonal({...this.formData,staffPhoto:fileList.length? fileList[0].url : " "})
         this.$message.success("保存用户详细信息成功")
     }
   },

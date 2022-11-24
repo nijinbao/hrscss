@@ -20,6 +20,7 @@
           <el-table-column label="头像" align="center" width="120">
             <template v-slot="{row}">
               <img 
+              @click="showCanvas(row.staffPhoto)"  
               :src="row.staffPhoto"
                style="border-radius:50% ;width: 100px; height: 100px; padding: 10px" alt=""
                v-imgeerror="require('@/assets/common/head.jpg')">
@@ -71,6 +72,15 @@
           </el-pagination>
         </el-row>
         <addEmploy :isShow.sync="isShow"></addEmploy>
+        <el-dialog 
+        title="二维码"
+        width="30%" 
+        :visible.sync="showDialog" 
+        >
+        <el-row type="flex" justify="center" aligin="middle">
+          <canvas ref="erweima"></canvas>
+        </el-row>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -80,6 +90,8 @@ import {getEmployerList , delEmploy} from "@/api/employees"
 import EmployeeEnum from "@/constant/employees"
 import addEmploy from "./components/add-employ.vue"
 import { formatDate } from "@/filters"
+import QrCode from "qrcode"
+import { func } from "prop-types"
 export default {
 data() {
   return {
@@ -92,6 +104,8 @@ data() {
     loading:false,
     // 定义添加员工的弹出层是否显示
     isShow:false,
+    // 是否显示二维码的对话框
+    showDialog:false
    
 
   }
@@ -188,6 +202,18 @@ methods: {
         })
       })
     return {header,data}
+  },
+  // 点击图片弹出对话框显示二维码
+  async showCanvas(url) {
+    // 首先判断用户头像是否为空
+    if(url && url.trim()) {
+      this.showDialog = true
+     await this.$nextTick(() =>{
+        QrCode.toCanvas(this.$refs.erweima,url)
+      });
+    }else {
+      this.$message.error("用户未上传头像")
+    }
   }
 },
 created() {
