@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import { pullAt } from "lodash";
 // 获取员工的简单列表
 export function getEmployeeSimple( ) {
   return request({
@@ -90,6 +91,16 @@ export function updateJob(data) {
   return request({
     url: `/employees/${data.userId}/jobs`,
     method: 'put',
+    data
+  })
+}
+/**
+ * 给用户分配角色
+*/
+export function assiginRole(data) {
+  return request({
+    url:"/sys/user/assignRoles",
+    method:"put" ,
     data
   })
 }

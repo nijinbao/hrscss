@@ -54,7 +54,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="addRole(row.id)">角色</el-button>
               <el-button type="text" size="small" @click="delEmploy(row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -81,6 +81,8 @@
           <canvas ref="erweima"></canvas>
         </el-row>
       </el-dialog>
+      <!-- 分配角色的对话框 -->
+      <addRole ref="addRole" :showDialog.sync="showRoleDialog" :userId="userId"></addRole>
     </div>
   </div>
 </template>
@@ -89,6 +91,7 @@
 import {getEmployerList , delEmploy} from "@/api/employees"
 import EmployeeEnum from "@/constant/employees"
 import addEmploy from "./components/add-employ.vue"
+import addRole from "./components/add-role.vue"
 import { formatDate } from "@/filters"
 import QrCode from "qrcode"
 import { func } from "prop-types"
@@ -105,7 +108,11 @@ data() {
     // 定义添加员工的弹出层是否显示
     isShow:false,
     // 是否显示二维码的对话框
-    showDialog:false
+    showDialog:false,
+    // 分配角色的对话框是否显示
+    showRoleDialog:false,
+    // 用户id
+    userId:""
    
 
   }
@@ -214,13 +221,21 @@ methods: {
     }else {
       this.$message.error("用户未上传头像")
     }
+  },
+  async addRole(id) {
+    // props传递的数据是异步的，在子组件的created时，userId还没有传递过去
+    // 子组件的函数是异步函数如果需要先执行该异步函数，我们需要使用async await
+   await this.$refs.addRole.getUserDetailInfoById(id)
+    this.userId = id
+    this.showRoleDialog = true
   }
 },
 created() {
   this.getEmployerList()
 },
 components:{
-  addEmploy
+  addEmploy,
+  addRole
 }
 }
 </script>
