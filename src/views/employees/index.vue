@@ -94,7 +94,6 @@ import addEmploy from "./components/add-employ.vue"
 import addRole from "./components/add-role.vue"
 import { formatDate } from "@/filters"
 import QrCode from "qrcode"
-import { func } from "prop-types"
 export default {
 data() {
   return {
