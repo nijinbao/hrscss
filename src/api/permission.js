@@ -1,9 +1,8 @@
 import request from "@/utils/request"
 // 获取权限
-export function getPermissionList(params) {
+export function getPermissionList() {
   return request({
     url: '/sys/permission',
-    params
   })
 }
 // 新增权限

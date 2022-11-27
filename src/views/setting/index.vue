@@ -20,7 +20,7 @@
                 <el-table-column label="操作 " align="center">
                   <template slot-scope="{row}">
                     <div>
-                      <el-button type="text">分配权限</el-button>
+                      <el-button type="text" @click="assignRole(row)">分配权限</el-button>
                       <el-button type="text" @click="editRole(row.id)">修改</el-button>
                       <el-button type="text" @click="deleteRole(row.id)">删除</el-button>
                     </div>
@@ -96,13 +96,36 @@
         </el-row>
         
       </el-dialog>
+      <!-- 给角色 分配权限对话框 -->
+      <el-dialog :visible="showAssignPer" :title="titleText" @close="permissionCancel">
+        <el-tree 
+          ref="assiginRoleTree"
+          :data="permissionList"
+          node-key="id"
+          :props="{
+            label:'name',
+            children:'children'
+          }"
+          show-checkbox
+          default-expand-all
+          check-strictly	
+          :default-checked-keys="permIds"	>
+      </el-tree>
+        <!-- 底部 -->
+        <el-row slot="footer" type="flex" justify="center">
+          <el-button  size="mini" @click="permissionCancel">取消</el-button>
+          <el-button type="primary" size="mini" @click="submit">确定</el-button>
+        </el-row>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import {getRoleList, getCompanyById , deleteRole , getRoleInfo , updateRole ,addRole  } from "@/api/setting"
+import {getRoleList, getCompanyById , deleteRole , getRoleInfo , updateRole ,addRole ,getRolePermission } from "@/api/setting"
+import { getPermissionList } from "@/api/permission"
 import { mapGetters } from "vuex"
+import {tranListToTreeData} from "@/utils/index"
 export default {
   data() {
     return {
@@ -128,7 +151,15 @@ export default {
         message:"name不能为空"
       }]
         
-      }
+      },
+      showAssignPer:false,
+      name:"",
+      // 权限点数据
+      permissionList:[],
+      // 选中的权限点数组
+      permIds:[],
+      // 角色id
+      roleId:""
     }
   },
   methods: {
@@ -196,6 +227,27 @@ export default {
         name:"",
         description:""
       }
+    },
+   async assignRole(row) {
+      this.permissionList = tranListToTreeData(await getPermissionList(),"0")
+      let {permIds} = await getRoleInfo(row.id)
+      this.roleId = row.id
+      this.permIds = permIds
+      this.showAssignPer = true
+      this.name = row.name
+    },
+    permissionCancel() {
+      // 重置数据
+      this.permIds = []
+      this.showAssignPer = false;
+    },
+   async submit() {
+      // 提交为角色分配的权限
+      // getCheckedKeys()获取当前被选中的树节点的key组成的数组
+      let permIds = this.$refs.assiginRoleTree.getCheckedKeys()
+      await getRolePermission({id:this.roleId,permIds})
+      this.showAssignPer = false
+      this.$message.success("分配权限成功")
     }
 
   },
@@ -204,7 +256,10 @@ export default {
     this.getCompanyById()
   },
   computed:{
-    ...mapGetters(["companyId"])
+    ...mapGetters(["companyId"]),
+    titleText() {
+      return `为${this.name} 分配权限`
+    }
   }
 }
 </script>
