@@ -1,5 +1,6 @@
 import {getToken,setToken,removeToken, setTimeStamp} from "@/utils/auth"
 import {login, getUserInfo ,getUserDetailInfoById} from "@/api/user"
+import {resetRouter} from "@/router/index"
 const state = {
   token:getToken(),//vuex加载就从本地缓存中获取token,
   userInfo:{}
@@ -36,12 +37,17 @@ const actions = {
         let baseInfo = await getUserDetailInfoById(res.userId)
         let newInfo = {...res, ...baseInfo}
         context.commit("setUserInfo", newInfo)
+        // return res是为了后面做用户权限认证做伏笔
         return res
   },
   // 用户退出 删除用户的token 删除用户资料
   logout(context) {
-    context.commit("removeToken")
-    context.commit("deleteUserInfo")
+      // 重置路由
+      resetRouter()
+      context.commit("removeToken")
+      context.commit("deleteUserInfo")
+      // 第三个参数加上{root:true}子模块中的context就会变成父模块的context
+      context.commit("permission/setRoutes",[],{root:true})
   }
   
   }

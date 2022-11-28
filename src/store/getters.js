@@ -8,6 +8,8 @@ const getters = {
 //  建立用户头像的快捷访问
   staffPhoto :state => state.user.userInfo.staffPhoto,
   // 建立公司id的快捷访问
-  companyId:state => state.user.userInfo.companyId
+  companyId:state => state.user.userInfo.companyId,
+  // 建立用户所拥有的路由权限的快捷访问
+  routes :state => state.permission.routes ,
 }
 export default getters

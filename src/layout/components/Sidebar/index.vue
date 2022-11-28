@@ -28,11 +28,13 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      "routes"
     ]),
-    routes() {
-      return this.$router.options.routes
-    },
+    // routes() {
+      // 这里获取的是数据是静态的不是响应式的
+    //   return this.$router.options.routes
+    // },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route

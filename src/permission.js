@@ -16,7 +16,14 @@ router.beforeEach(async (to,from,next)=>{
     } else {
       // 判断是否存在用户Id
       if(!store.getters.userId) {
-       await store.dispatch("user/getUserInfo")
+        // 获取用户资料同时获取用户对于路由的访问权限列表
+     let {roles : {menus}}  = await store.dispatch("user/getUserInfo")
+     
+    //  获取用户对于动态路由的访问权限
+    let routes = await store.dispatch("permission/filterRoutes",menus)
+    router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }
+  ])   
+     next(to.path)
       }
       next()
     }

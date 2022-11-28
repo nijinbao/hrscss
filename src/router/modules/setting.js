@@ -1,6 +1,6 @@
 import layout from "@/layout/index.vue"
 export default {
-  name:"setting",
+  name:"settings",
   path:"/setting",
   component:layout,
   children:[

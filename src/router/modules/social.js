@@ -1,6 +1,6 @@
 import layout from "@/layout/index.vue"
 export default {
-  name:"social",
+  name:"social_securitys",
   path:"/social",
   component:layout,
   children:[

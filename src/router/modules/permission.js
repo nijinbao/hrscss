@@ -1,6 +1,6 @@
 import layout from "@/layout/index.vue"
 export default {
-  name:"permission",
+  name:"permissions",
   path:"/permission",
   component:layout,
   children:[
