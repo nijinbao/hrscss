@@ -20,6 +20,9 @@ import component from "@/components/index"
 Vue.use(component)
 import Print from 'vue-print-nb'
 Vue.use(Print);
+import checkPermission from '@/minxins/checkPermission'
+// 全局混入
+Vue.mixin(checkPermission);
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

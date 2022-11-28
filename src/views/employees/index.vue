@@ -9,7 +9,7 @@
           <template v-slot:after>
             <el-button type="success" @click="goImport">导入</el-button>
             <el-button type="danger" @click="exportData">导出</el-button>
-            <el-button type="primary" icon="el-icon-plus" @click="addEmployer" size="mini">新增员工</el-button>
+            <el-button type="primary" icon="el-icon-plus" @click="addEmployer" size="mini" :disabled="!checkPermission('POINT-USER-ADD')">新增员工</el-button>
           </template>
         </PageTools>
         <!-- 表格 -->

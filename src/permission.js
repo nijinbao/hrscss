@@ -21,6 +21,7 @@ router.beforeEach(async (to,from,next)=>{
      
     //  获取用户对于动态路由的访问权限
     let routes = await store.dispatch("permission/filterRoutes",menus)
+    // 将动态路由添加到路由映射表
     router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }
   ])   
      next(to.path)
